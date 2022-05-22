@@ -83,7 +83,7 @@ func (c *Cache) Add(key string, value Value) {
 		c.cache[key] = e
 		c.nBytes += int64(len(key)) + int64(value.Len())
 	}
-	// if memory exceed then remove oldest
+	// if memory exceed then remove oldest (use while because we don't know the size of oldest element)
 	for c.maxBytes != 0 && c.maxBytes < c.nBytes {
 		c.RemoveOldest()
 	}
