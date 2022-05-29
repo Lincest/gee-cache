@@ -1,4 +1,4 @@
-package gee_cache
+package geecache
 
 import "container/list"
 
@@ -15,17 +15,17 @@ import "container/list"
 
 // Cache (not safe for concurrent)
 type Cache struct {
-	maxBytes int64 // max memory
-	nBytes int64 // used memory
-	ll *list.List // double Linked List, Front is the newest and Back is the oldest
-	cache map[string]*list.Element
+	maxBytes int64      // max memory
+	nBytes   int64      // used memory
+	ll       *list.List // double Linked List, Front is the newest and Back is the oldest
+	cache    map[string]*list.Element
 	// optional life circle function: execute when entry is purged
 	OnEvicted func(key string, value Value)
 }
 
 // Linked List's element
 type entry struct {
-	key string
+	key   string
 	value Value
 }
 
@@ -36,10 +36,10 @@ type Value interface {
 
 // New Cache's Constructor
 func New(maxBytes int64, onEvicted func(string, Value)) *Cache {
-	return &Cache {
-		maxBytes: maxBytes,
-		ll: list.New(),
-		cache: make(map[string]*list.Element),
+	return &Cache{
+		maxBytes:  maxBytes,
+		ll:        list.New(),
+		cache:     make(map[string]*list.Element),
 		OnEvicted: onEvicted,
 	}
 }
@@ -47,7 +47,7 @@ func New(maxBytes int64, onEvicted func(string, Value)) *Cache {
 // Get key -> value
 func (c *Cache) Get(key string) (value Value, ok bool) {
 	if e, ok := c.cache[key]; ok {
-		c.ll.MoveToFront(e) // last used
+		c.ll.MoveToFront(e)    // last used
 		kv := e.Value.(*entry) // Value is an interface and coercion to entry
 		return kv.value, true
 	}
@@ -76,7 +76,7 @@ func (c *Cache) Add(key string, value Value) {
 		c.ll.MoveToFront(e)
 		kv := e.Value.(*entry)
 		c.nBytes += int64(value.Len()) - int64(kv.value.Len()) // new - old
-		kv.value = value // set to new value
+		kv.value = value                                       // set to new value
 	} else {
 		// add to the front
 		e := c.ll.PushFront(&entry{key, value})

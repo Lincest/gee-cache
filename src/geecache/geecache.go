@@ -1,4 +1,4 @@
-package gee_cache
+package geecache
 
 import (
 	"fmt"
@@ -27,24 +27,26 @@ func (f GetterFunc) Get(key string) ([]byte, error) {
 // A Group is a cache namespace and associated data loaded spread over
 // main struct of gee-cahce project
 type Group struct {
-	name string
-	getter Getter
+	name      string
+	getter    Getter
 	mainCache cache
 }
 
 var (
-	mu sync.RWMutex // read-write mutex
+	mu     sync.RWMutex // read-write mutex
 	groups = make(map[string]*Group)
 )
 
 // NewGroup is the constructor of group
 func NewGroup(name string, cacheBytes int64, getter Getter) *Group {
-	if getter == nil {panic("nil Getter")}
+	if getter == nil {
+		panic("nil Getter")
+	}
 	mu.Lock()
 	defer mu.Unlock()
 	g := &Group{
-		name: name,
-		getter: getter,
+		name:      name,
+		getter:    getter,
 		mainCache: cache{cacheBytes: cacheBytes},
 	}
 	groups[name] = g
@@ -55,7 +57,7 @@ func NewGroup(name string, cacheBytes int64, getter Getter) *Group {
 func GetGroup(name string) *Group {
 	mu.RLock()
 	g := groups[name]
-	mu.Unlock()
+	mu.RUnlock()
 	return g
 }
 
@@ -71,7 +73,6 @@ func (g *Group) Get(key string) (ByteView, error) {
 	return g.load(key)
 }
 
-
 func (g *Group) load(key string) (value ByteView, err error) {
 	return g.getLocally(key)
 }
@@ -85,4 +86,3 @@ func (g *Group) getLocally(key string) (ByteView, error) {
 	g.mainCache.add(key, value)
 	return value, nil
 }
-

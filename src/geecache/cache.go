@@ -1,4 +1,4 @@
-package gee_cache
+package geecache
 
 import "sync"
 
@@ -9,8 +9,8 @@ import "sync"
 **/
 
 type cache struct {
-	mu sync.Mutex
-	lru *Cache
+	mu         sync.Mutex
+	lru        *Cache
 	cacheBytes int64
 }
 

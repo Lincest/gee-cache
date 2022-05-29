@@ -1,4 +1,4 @@
-package gee_cache
+package geecache
 
 /**
     gee_cache
@@ -12,7 +12,7 @@ type ByteView struct {
 }
 
 // Len view's size
-func (v ByteView) Len() int{
+func (v ByteView) Len() int {
 	return len(v.b)
 }
 
